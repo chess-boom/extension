@@ -1,0 +1,30 @@
+{
+  "name": "@chessboom/extension",
+  "version": "0.0.1",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack --config webpack/webpack.config.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/btakli-org/extension-dev.git"
+  },
+  "keywords": [],
+  "author": "ChessBoom",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/btakli-org/extension-dev/issues"
+  },
+  "homepage": "https://github.com/btakli-org/extension-dev#readme",
+  "dependencies": {},
+  "devDependencies": {
+    "@tsconfig/recommended": "^1.0.1",
+    "@types/chrome": "^0.0.196",
+    "copy-webpack-plugin": "^11.0.0",
+    "ts-loader": "^9.3.1",
+    "typescript": "^4.8.3",
+    "webpack": "^5.74.0",
+    "webpack-cli": "^4.10.0"
+  }
+}

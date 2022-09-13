@@ -1,0 +1,13 @@
+{
+    "appName": {
+      "message": "Chess Boom"
+    },
+    "extName": {
+      "message": "Chess Boom",
+      "description": "Safari consideration: name must be shorter than 40 chars"
+    },
+    "extDesc": {
+      "message": "A Browser Extension that teaches lichess.org users improve their skills.",
+      "description": "Extension description"
+    }
+}
