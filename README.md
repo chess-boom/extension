@@ -1,4 +1,4 @@
-# extension-dev
+# Extension
 
 ## Dev Dependencies
 
