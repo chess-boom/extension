@@ -8,15 +8,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/btakli-org/extension-dev.git"
+    "url": "git+https://github.com/btakli-org/extension.git"
   },
   "keywords": [],
   "author": "ChessBoom",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
-    "url": "https://github.com/btakli-org/extension-dev/issues"
+    "url": "https://github.com/btakli-org/extension/issues"
   },
-  "homepage": "https://github.com/btakli-org/extension-dev#readme",
+  "homepage": "https://github.com/btakli-org/extension#readme",
   "devDependencies": {
     "@tsconfig/recommended": "^1.0.1",
     "@types/chrome": "^0.0.196",
