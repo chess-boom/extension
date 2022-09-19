@@ -15,8 +15,12 @@
     "128": "images/icon-128.png"
   },
   "action": {},
-  "permissions": ["activeTab", "scripting"],
+  "permissions": ["activeTab", "scripting", "declarativeContent"],
+  "host_permissions": [
+    "https://lichess.org/"
+  ],
   "background": {
     "service_worker": "background.js"
-  }
+  },
+  "default_popup": "popup.html"
 }
