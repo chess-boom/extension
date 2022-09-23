@@ -2,6 +2,7 @@ const path = require("path");
 const webpack = require("webpack"); // to access built-in plugins
 const CopyPlugin = require("copy-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const HtmlWebpackTagsPlugin = require("html-webpack-tags-plugin");
 
 module.exports = {
     mode: "production",
@@ -29,5 +30,6 @@ module.exports = {
             patterns: [{ from: ".", to: ".", context: "public" }],
         }),
         new HtmlWebpackPlugin({ template: "./src/index.html" }),
+        new HtmlWebpackTagsPlugin({ tags: ["index.js", "style.css"], append: true }),
     ],
 };
