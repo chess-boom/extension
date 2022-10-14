@@ -20,7 +20,7 @@
   "devDependencies": {
     "@tsconfig/recommended": "^1.0.1",
     "@types/chrome": "^0.0.196",
-    "@types/jest": "^29.0.3",
+    "@types/jest": "^29.1.2",
     "copy-webpack-plugin": "^11.0.0",
     "dotenv": "^16.0.2",
     "html-webpack-plugin": "^5.5.0",
