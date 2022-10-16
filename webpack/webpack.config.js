@@ -5,6 +5,7 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const HtmlWebpackTagsPlugin = require("html-webpack-tags-plugin");
 
 module.exports = {
+    target: "node",
     mode: "production",
     entry: {
         background: path.resolve(__dirname, "..", "src", "background.ts"),
