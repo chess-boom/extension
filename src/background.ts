@@ -1,41 +1,31 @@
-import { read } from "./api/stream";
-import fs from 'fs';
-//import { writeFileSync} from 'fs';
-
+//import { read } from "./api/stream";
 const options = {
     method: "GET",
     headers: { Authorization: "lip_HGF1VX6voWbIvJLW1xuY", Accept: "application/json" },
 };
 
 
-let stream = fetch(`https://lichess.org/api/stream/game`, options)
+//let stream = fetch(`https://lichess.org/api/stream/game`, options)
+var filename = "testMoves.txt";
 
 const onMessage = (obj: any) => console.log(obj);
 const onComplete = () => console.log("The stream has completed");
+
+function download(moves: string){
+    chrome.downloads.download({
+        url: 'data:text/plain;base64,' + btoa(moves),
+        filename: filename
+      });
+};
 
 chrome.action.onClicked.addListener(activeTab => {
     if (!activeTab.active) {
         return;
     }
     var gameID = activeTab.url?.split('/').at(-1);
-    var obj = fetch(`https://lichess.org/game/export/${gameID}`, options)
+    fetch(`https://lichess.org/game/export/${gameID}`, options)
     .then((response) => response.json())
-    .then((data) => {return data.moves});
-
-    console.log(obj.toString());
-
-    var filename = "testMoves.txt";
-
-    fs.writeFileSync(filename, obj.toString(), {
-        flag: 'w',
-    });
-    
-
-
-    // chrome.downloads.download({
-    //     url: "http://your.url/to/download",
-    //     filename: "suggested/filename/with/relative.path" // Optional
-    //   });
+    .then((data) => {download(data.moves.toString())});
 });
 
 //stream.then(read(onMessage)).then(onComplete);
