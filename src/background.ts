@@ -1,32 +1,58 @@
-//import { read } from "./api/stream";
+import { Buffer } from "buffer";
+
+const EXT = "pgn";
+const MIMETYPE = "application/x-chess-pgn";
+
 const options = {
     method: "GET",
-    headers: { Authorization: "lip_HGF1VX6voWbIvJLW1xuY", Accept: "application/json" },
+    headers: { Authorization: "...", Accept: MIMETYPE },
 };
 
-
-//let stream = fetch(`https://lichess.org/api/stream/game`, options)
-var filename = "testMoves.txt";
-
-const onMessage = (obj: any) => console.log(obj);
-const onComplete = () => console.log("The stream has completed");
-
-function download(moves: string){
+function downloadGame(gameData: string, gameId?: string) {
     chrome.downloads.download({
-        url: 'data:text/plain;base64,' + btoa(moves),
-        filename: filename
-      });
-};
+        url: `data:${MIMETYPE},${gameData}`,
+        filename: `${gameId}.${EXT}`,
+    });
+}
 
 chrome.action.onClicked.addListener(activeTab => {
     if (!activeTab.active) {
         return;
     }
-    var gameID = activeTab.url?.split('/').at(-1);
-    fetch(`https://lichess.org/game/export/${gameID}`, options)
-    .then((response) => response.json())
-    .then((data) => {download(data.moves.toString())});
+    var gameId = activeTab.url?.split("/").at(-1);
+    fetch(`https://lichess.org/game/export/${gameId}`, options)
+        .then(response => response.body)
+        .then(rb => {
+            const reader = rb?.getReader();
+            return new ReadableStream({
+                start(controller) {
+                    // The following function handles each data chunk
+                    function push() {
+                        // "done" is a Boolean and value a "Uint8Array"
+                        reader?.read().then(({ done, value }) => {
+                            // If there is no more data to read
+                            if (done) {
+                                console.log("done", done);
+                                controller.close();
+                                return;
+                            }
+                            // Get the data and send it to the browser via the controller
+                            controller.enqueue(value);
+                            // Check chunks by logging to the console
+                            console.log(done, value);
+                            push();
+                        });
+                    }
+                    push();
+                },
+            });
+        })
+        .then(stream =>
+            // Respond with our stream
+            new Response(stream, { headers: { "Content-Type": "text/plain" } }).text()
+        )
+        .then(gameData => {
+            // console.log(gameData);
+            downloadGame(gameData, gameId);
+        });
 });
-
-//stream.then(read(onMessage)).then(onComplete);
-
