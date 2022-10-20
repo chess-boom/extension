@@ -1,5 +1,3 @@
-import { Buffer } from "buffer";
-
 const EXT = "pgn";
 const MIMETYPE = "application/x-chess-pgn";
 
