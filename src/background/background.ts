@@ -1,13 +1,15 @@
 import { notifyOnFinishStream } from "../api/utils";
 
-const token = "lip_dpwOr9eC6UfChJPefDog";
+const token = "lip_JhlqKV2dGbC66p7kTnL9";
 
-const config =  {
+const onMessage = (obj: any): void => console.log(obj);
+
+const config = {
     method: "GET",
     headers: {
-        "Content-Type": "application/json",
+        Accept: "application/x-ndjson",
         Authorization: `Bearer ${token}`,
-    }
-}
+    },
+};
 
-notifyOnFinishStream(config);
+notifyOnFinishStream(onMessage, config);

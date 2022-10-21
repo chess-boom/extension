@@ -40,47 +40,59 @@ export function downloadGame(gameId: string, config: any): void {
         });
 }
 
-export function notifyOnFinishStream(config: any): void {
-    fetch('https://lichess.org/api/stream/event', config)
-        // .then(response => response.body?.pipeTo()
+function notify() {
+    chrome.notifications.create(
+        {
+            type: "basic",
+            iconUrl: "images/icon-32.png",
+            title: "Chess BOOOM",
+            message: "Great game! Click on Chess Boom to begin analysis!",
+            silent: false,
+        },
+        () => {}
+    );
+}
 
-        // .then(rb => {
-        //     const reader = rb?.getReader();
-        //     if (reader) {
-        //         return getReadableStream(reader);
-        //     }
-        // })
-        // .then(stream => {
-        //     console.log(stream);
-        // })
-            
-        //     new Response(stream, { headers: { "Content-Type": "application/json" } }).json())
-        // .then(data => {
-        //     console.log(data);            
-        // })
-        // .then(res => {
-        //     res.body?.on('data', (chunk: Buffer) => {
-        //         const eventString = chunk.toString();
-        //         // Check if buffer is more that LF (Line Feed)
-        //         if (eventString.length > 1){
-        //             const event = JSON.parse(eventString);
-        //             process.stdout.write(event.type+"\n");
-        //             if (event.type == 'gameFinish'){
-        //                 chrome.notifications.create(
-        //                     {
-        //                         type: "basic",
-        //                         iconUrl: "images/icon-32.png",
-        //                         title: "Chess BOOOM",
-        //                         message: "Great game! Click on Chess Boom to begin analysis!",
-        //                         silent: false,
-        //                     },
-        //                     () => {}
-        //                 );
-        //             }
-        //         }
-        //     })
-        // })
-        .catch(err => {
-            console.log(err.response.data);
+export const readStream =
+    (processLine: any) =>
+    (response: any): Promise<void> => {
+        // const matcher = /\r?\n/;
+        const decoder = new TextDecoder();
+        let buf: string = "";
+        return new Promise((resolve, fail): void => {
+            response.body.on("data", (buffer: Buffer) => {
+                const chunk = decoder.decode(buffer, { stream: true });
+                const eventString = chunk.toString();
+                // Check if buffer is more than LF (Line Feed)
+                if (eventString.length > 1) {
+                    const event = JSON.parse(eventString);
+                    process.stdout.write(event.type + "\n");
+                    if (event.type == "gameFinish") {
+                        notify();
+                    }
+                }
+            });
+            // response.body.on("data", (buffer: Buffer) => {
+            //     const chunk = decoder.decode(buffer, { stream: true });
+            //     process.stdout.write(chunk + "\n");
+            //     buf += chunk;
+            //     const parts = buf.split(matcher);
+            //     buf = parts.pop() || "";
+            //     for (const i of parts.filter(p => p)) processLine(JSON.parse(i));
+            // });
+            response.body.on("end", () => {
+                if (buf.length > 0) processLine(JSON.parse(buf));
+                resolve();
+            });
+            response.body.on("error", fail);
+        });
+    };
+
+export function notifyOnFinishStream(onMessage: any, config: any): void {
+    const stream = fetch("https://lichess.org/api/stream/event", config);
+    stream
+        .then(response => {
+            console.log(response);
+            readStream(onMessage);
         });
 }
