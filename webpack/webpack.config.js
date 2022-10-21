@@ -4,6 +4,7 @@ const CopyPlugin = require("copy-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 module.exports = {
+    target: "node",
     mode: "production",
     entry: {
         background: path.resolve(__dirname, "..", "src", "background", "background.ts"),

@@ -14,8 +14,20 @@
         "96": "images/icon-96.png",
         "128": "images/icon-128.png"
     },
-    "action": { "default_popup": "index.html" },
-    "permissions": ["activeTab", "tabs", "scripting", "declarativeContent", "downloads"],
+    "action": {
+        "default_title": "Analyze Game?",
+        "default_popup": "index.html"
+    },
+    "permissions": [
+        "activeTab",
+        "tabs",
+        "notifications",
+        "storage",
+        "alarms",
+        "scripting",
+        "declarativeContent",
+        "nativeMessaging"
+    ],
     "host_permissions": ["https://lichess.org/"],
     "background": {
         "service_worker": "background.js"
