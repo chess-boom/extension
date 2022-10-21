@@ -1,10 +1,10 @@
 import "./style.css";
-import { downloadGame, mimetype } from "../api/get";
+import { downloadGame, mimetype } from "../api/utils";
 
-const token = "";
+const token = "lip_dpwOr9eC6UfChJPefDog";
 
 const config = {
-    method: "get",
+    method: "GET",
     headers: { Authorization: `Bearer ${token}`, Accept: mimetype },
 };
 
@@ -14,7 +14,7 @@ const query = { active: true, currentWindow: true };
 function handleYes() {
     function callback(tabs: any) {
         var url = new URL(tabs[0].url);
-        var gameId = url.pathname.split("/")[1];
+        var gameId = url.pathname.split("/")[1].substring(0,8);
         if (gameId) {
             downloadGame(gameId, config);
         }

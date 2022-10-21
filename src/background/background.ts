@@ -1,29 +1,13 @@
-chrome.action.onClicked.addListener(activeTab => {
-    console.log(activeTab);
-});
+import { notifyOnFinishStream } from "../api/utils";
 
-export const apiconfig = () => {
-    // GET TOKEN FROM THE STATE
-    const token = "";
+const token = "lip_dpwOr9eC6UfChJPefDog";
 
-    // SET UP HEADERS
-    const config = {
-        headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-        },
-    };
+const config =  {
+    method: "GET",
+    headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+    }
+}
 
-    return config;
-};
-
-chrome.notifications.create(
-    {
-        type: "basic",
-        iconUrl: "images/icon-32.png",
-        title: "Chess BOOOM",
-        message: "Great game! Click on Chess Boom to begin analysis!",
-        silent: false,
-    },
-    () => {}
-);
+notifyOnFinishStream(config);
