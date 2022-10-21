@@ -14,12 +14,13 @@
         "96": "images/icon-96.png",
         "128": "images/icon-128.png"
     },
-    "action": { 
+    "action": {
         "default_title": "Analyze Game?",
-        "default_popup": "index.html" 
+        "default_popup": "index.html"
     },
     "permissions": [
         "activeTab",
+        "tabs",
         "notifications",
         "storage",
         "alarms",
