@@ -1,35 +1,24 @@
-import { join } from "path";
-
 import "./style.css";
+import { downloadGame, mimetype } from "../api/get";
 
-const options = {
-    method: "GET",
-    headers: { Authorization: "", Accept: "application/x-ndjson" },
+const token = "";
+
+const config = {
+    method: "get",
+    headers: { Authorization: `Bearer ${token}`, Accept: mimetype },
 };
 
-// chrome.fileBrowserHandler.selectFile(
-//     selectionParams: object,
-//     callback?: function,
-// )
+document.getElementById("yes")!.addEventListener("click", handleYes)!;
+const query = { active: true, currentWindow: true };
 
-function write(filename: string, data: any) {
-    // can't use Fs
-}
+function handleYes() {
+    function callback(tabs: any) {
+        var url = new URL(tabs[0].url);
+        var gameId = url.pathname.split("/")[1];
+        if (gameId) {
+            downloadGame(gameId, config);
+        }
+    }
 
-// let fileHandle;
-// butOpenFile.addEventListener("click", async () => {
-//     [fileHandle] = await window.showOpenFilePicker();
-// });
-
-const yes_button = document.getElementById("yes");
-if (yes_button != null) {
-    console.log("button");
-    yes_button.addEventListener("click", () => {
-        const gameId = "QELifyUb";
-        // const ws = Fs.createWriteStream(`.debug/${gameId}.pgn`);
-        fetch(`https://lichess.org/game/export/${gameId}`, options)
-            .then(response => console.log(response))
-            .then(response => write(`${gameId}.pgn`, response))
-            .catch(err => console.error(err));
-    });
+    chrome.tabs.query(query, callback);
 }

@@ -2,8 +2,6 @@ const path = require("path");
 const webpack = require("webpack"); // to access built-in plugins
 const CopyPlugin = require("copy-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-const HtmlWebpackTagsPlugin = require("html-webpack-tags-plugin");
-const nodeExternals = require("webpack-node-externals");
 
 module.exports = {
     mode: "production",
