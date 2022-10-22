@@ -1,7 +1,19 @@
 import { download, notification } from "../chrome/utils";
 
-export const mimetype = "application/x-chess-pgn";
+const downloadMimetype = "application/x-chess-pgn";
+const gameEventMimetype = "application/x-ndjson";
+const token = "lip_dpwOr9eC6UfChJPefDog";
 const ext = "pgn";
+
+function _config(acceptType: string){
+    return {
+        method: "GET",
+        headers: { 
+            Authorization: `Bearer ${token}`,
+            Accept: acceptType 
+        },
+    }
+}
 
 function _getReadableStream(reader: ReadableStreamDefaultReader<Uint8Array>): ReadableStream {
     return new ReadableStream({
@@ -69,8 +81,8 @@ function _notifyOnGameEvent (event: string): any {
     };
 };
     
-export function apiDownloadGame(gameId: string, config: any): void {
-    fetch(`https://lichess.org/game/export/${gameId}`, config)
+export function apiDownloadGame(gameId: string): void {
+    fetch(`https://lichess.org/game/export/${gameId}`, _config(downloadMimetype))
         .then(response => response.body)
         .then(rb => {
             const reader = rb?.getReader();
@@ -80,15 +92,15 @@ export function apiDownloadGame(gameId: string, config: any): void {
         })
         .then(stream => new Response(stream, { headers: { "Content-Type": "text/plain" } }).text())
         .then(gameData => {
-            const url = `data:${mimetype},${gameData}`;
+            const url = `data:${downloadMimetype},${gameData}`;
             const filename = `${gameId}.${ext}`
 
             download(url, filename);
         });
 }
 
-export function apiNotifyOnGameEvent(event: string, config: any): void {
-    fetch("https://lichess.org/api/stream/event", config)
+export function apiNotifyOnGameEvent(event: string): void {
+    fetch("https://lichess.org/api/stream/event", _config(gameEventMimetype))
         .then(_notifyOnGameEvent(event))
         .catch(error => {
             console.error(error);
