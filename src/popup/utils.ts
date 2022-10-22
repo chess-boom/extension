@@ -13,4 +13,4 @@ export function handleYes(): void {
     }
     
     chrome.tabs.query(query, downloadOnGameIdExists);
-}
+};

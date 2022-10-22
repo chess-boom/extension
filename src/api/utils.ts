@@ -1,9 +1,15 @@
 import { download, notification } from "../chrome/utils";
+import { getReadableStream, handleStreamResponse } from "./streamUtils";
 
 const downloadMimetype = "application/x-chess-pgn";
 const gameEventMimetype = "application/x-ndjson";
 const token = "lip_dpwOr9eC6UfChJPefDog";
 const ext = "pgn";
+
+export enum LichessGameEvent {
+    finish = "gameFinish",
+    start = "gameStart"
+};
 
 function _config(acceptType: string){
     return {
@@ -13,72 +19,24 @@ function _config(acceptType: string){
             Accept: acceptType 
         },
     }
-}
+};
 
-function _getReadableStream(reader: ReadableStreamDefaultReader<Uint8Array>): ReadableStream {
-    return new ReadableStream({
-        start(controller) {
-            function push() {
-                reader?.read().then(({ done, value }) => {
-                    if (done) {
-                        controller.close();
-                        return;
-                    }
-                    controller.enqueue(value);
-                    push();
-                });
-            }
-            push();
-        },
-    });
-}
-
-function _notifyOnGameEvent (event: string): any {
+function _notifyOnGameEvent (event: LichessGameEvent): (response: Response) => void {
     const notifConfig = {
         iconUrl: "images/icon-32.png",
         title: "Chess Boom",
         message: "Great game! Click on the Chess Boom icon to begin analysis!"
     }
-
-    return (response: Response): any => {
-        const reader = response.body!.getReader();
-        const decoder = new TextDecoder();
-        const eol = /\r?\n/;
-
-        var buffer = "";
-        var gameEvent: any;
-
-        const loop: any = () =>
-            reader
-                .read()
-                .then(({ done, value }) => {
-                    if (!done) {
-                        const chunk: any = decoder.decode(value, {
-                            stream: true,
-                        });
-                        buffer += chunk;
-                        const parts = buffer.split(eol);
-                        buffer = parts.pop()!;
-                        for (const part of parts.filter(p => p)) {
-                            gameEvent = JSON.parse(part);
-                            if (gameEvent.type == event) {
-                                notification(notifConfig);
-                            }
-                        }
-                        return loop();
-                    }
-                    if (buffer.length > 0) {
-                        gameEvent = JSON.parse(buffer);
-                        if (gameEvent.type == event) {
-                            notification(notifConfig);
-                        }
-                    }
-                })
-                .catch(error => {
-                    console.error(error);
-                });
-        return loop();
+    
+    // here is where we define response data logic
+    const executeNotifOnGameEvent = (data: string): void => {
+        const gameEvent = JSON.parse(data);
+        if (gameEvent.type == event) {
+            notification(notifConfig);
+        }
     };
+
+    return (response: Response): void => handleStreamResponse(response, executeNotifOnGameEvent);
 };
     
 export function apiDownloadGame(gameId: string): void {
@@ -87,7 +45,7 @@ export function apiDownloadGame(gameId: string): void {
         .then(rb => {
             const reader = rb?.getReader();
             if (reader) {
-                return _getReadableStream(reader);
+                return getReadableStream(reader);
             }
         })
         .then(stream => new Response(stream, { headers: { "Content-Type": "text/plain" } }).text())
@@ -97,12 +55,12 @@ export function apiDownloadGame(gameId: string): void {
 
             download(url, filename);
         });
-}
+};
 
-export function apiNotifyOnGameEvent(event: string): void {
+export function apiNotifyOnGameEvent(event: LichessGameEvent): void {
     fetch("https://lichess.org/api/stream/event", _config(gameEventMimetype))
         .then(_notifyOnGameEvent(event))
         .catch(error => {
             console.error(error);
         });
-}
+};

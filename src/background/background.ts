@@ -1,5 +1,3 @@
-import { apiNotifyOnGameEvent } from "../api/utils";
+import { apiNotifyOnGameEvent, LichessGameEvent } from "../api/utils";
 
-const gameEvent = "gameFinish";
-
-apiNotifyOnGameEvent(gameEvent);
+apiNotifyOnGameEvent(LichessGameEvent.finish);
