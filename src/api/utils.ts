@@ -3,7 +3,7 @@ import { getReadableStream, handleStreamResponse } from "./streamUtils";
 
 const downloadMimetype = "application/x-chess-pgn";
 const gameEventMimetype = "application/x-ndjson";
-const token = "lip_dpwOr9eC6UfChJPefDog";
+const token = ""; // don't forget to add your token here!
 const ext = "pgn";
 
 export enum LichessGameEvent {
