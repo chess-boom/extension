@@ -1,8 +1,9 @@
-export const ext = "pgn";
-export const mimetype = "application/x-chess-pgn";
-const eol = /\r?\n/;
+import { download, notification } from "../chrome/utils";
 
-function getReadableStream(reader: ReadableStreamDefaultReader<Uint8Array>): ReadableStream {
+export const mimetype = "application/x-chess-pgn";
+const ext = "pgn";
+
+function _getReadableStream(reader: ReadableStreamDefaultReader<Uint8Array>): ReadableStream {
     return new ReadableStream({
         start(controller) {
             function push() {
@@ -20,44 +21,21 @@ function getReadableStream(reader: ReadableStreamDefaultReader<Uint8Array>): Rea
     });
 }
 
-export function downloadGame(gameId: string, config: any): void {
-    fetch(`https://lichess.org/game/export/${gameId}`, config)
-        .then(response => response.body)
-        .then(rb => {
-            const reader = rb?.getReader();
-            if (reader) {
-                return getReadableStream(reader);
-            }
-        })
-        .then(stream => new Response(stream, { headers: { "Content-Type": "text/plain" } }).text())
-        .then(gameData => {
-            chrome.downloads.download({
-                url: `data:${mimetype},${gameData}`,
-                filename: `${gameId}.${ext}`,
-            });
-        });
-}
+function _notifyOnGameEvent (event: string): any {
+    const notifConfig = {
+        iconUrl: "images/icon-32.png",
+        title: "Chess Boom",
+        message: "Great game! Click on the Chess Boom icon to begin analysis!"
+    }
 
-function notify() {
-    chrome.notifications.create(
-        {
-            type: "basic",
-            iconUrl: "images/icon-32.png",
-            title: "Chess Boom",
-            message: "Great game! Click on the Chess Boom icon to begin analysis!",
-            silent: false,
-        },
-        () => {}
-    );
-}
-
-const listen =
-    (event: string): any =>
-    (response: Response): any => {
+    return (response: Response): any => {
         const reader = response.body!.getReader();
         const decoder = new TextDecoder();
+        const eol = /\r?\n/;
+
         var buffer = "";
         var gameEvent: any;
+
         const loop: any = () =>
             reader
                 .read()
@@ -71,18 +49,16 @@ const listen =
                         buffer = parts.pop()!;
                         for (const part of parts.filter(p => p)) {
                             gameEvent = JSON.parse(part);
-                            console.log(gameEvent);
                             if (gameEvent.type == event) {
-                                notify();
+                                notification(notifConfig);
                             }
                         }
                         return loop();
                     }
                     if (buffer.length > 0) {
                         gameEvent = JSON.parse(buffer);
-                        console.log(gameEvent);
                         if (gameEvent.type == event) {
-                            notify();
+                            notification(notifConfig);
                         }
                     }
                 })
@@ -91,10 +67,29 @@ const listen =
                 });
         return loop();
     };
+};
+    
+export function apiDownloadGame(gameId: string, config: any): void {
+    fetch(`https://lichess.org/game/export/${gameId}`, config)
+        .then(response => response.body)
+        .then(rb => {
+            const reader = rb?.getReader();
+            if (reader) {
+                return _getReadableStream(reader);
+            }
+        })
+        .then(stream => new Response(stream, { headers: { "Content-Type": "text/plain" } }).text())
+        .then(gameData => {
+            const url = `data:${mimetype},${gameData}`;
+            const filename = `${gameId}.${ext}`
 
-export function notifyOnEvent(event: string, config: any): void {
+            download(url, filename);
+        });
+}
+
+export function apiNotifyOnGameEvent(event: string, config: any): void {
     fetch("https://lichess.org/api/stream/event", config)
-        .then(listen(event))
+        .then(_notifyOnGameEvent(event))
         .catch(error => {
             console.error(error);
         });

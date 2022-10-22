@@ -1,6 +1,8 @@
-import { notifyOnEvent } from "../api/utils";
+import { apiNotifyOnGameEvent } from "../api/utils";
 
-const token = "";
+const gameEvent = "gameFinish";
+
+const token = "lip_dpwOr9eC6UfChJPefDog";
 
 const config = {
     method: "GET",
@@ -10,4 +12,4 @@ const config = {
     },
 };
 
-notifyOnEvent("gameFinish", config);
+apiNotifyOnGameEvent(gameEvent, config);
