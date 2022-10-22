@@ -44,7 +44,7 @@ function notify() {
             type: "basic",
             iconUrl: "images/icon-32.png",
             title: "Chess Boom",
-            message: "Great game! Click on the Chess Boom to begin analysis!",
+            message: "Great game! Click on the Chess Boom icon to begin analysis!",
             silent: false,
         },
         () => {}
