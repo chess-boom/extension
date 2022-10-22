@@ -1,18 +1,16 @@
 export const ext = "pgn";
 export const mimetype = "application/x-chess-pgn";
+const eol = /\r?\n/;
 
 function getReadableStream(reader: ReadableStreamDefaultReader<Uint8Array>): ReadableStream {
     return new ReadableStream({
         start(controller) {
             function push() {
-                // "done" is a Boolean and value a "Uint8Array"
                 reader?.read().then(({ done, value }) => {
-                    // If there is no more data to read
                     if (done) {
                         controller.close();
                         return;
                     }
-                    // Get the data and send it to the browser via the controller
                     controller.enqueue(value);
                     push();
                 });
@@ -45,54 +43,48 @@ function notify() {
         {
             type: "basic",
             iconUrl: "images/icon-32.png",
-            title: "Chess BOOOM",
-            message: "Great game! Click on Chess Boom to begin analysis!",
+            title: "Chess Boom",
+            message: "Great game! Click on the Chess Boom to begin analysis!",
             silent: false,
         },
         () => {}
     );
 }
 
-export const readStream =
-    (processLine: any) =>
-    (response: any): Promise<void> => {
-        // const matcher = /\r?\n/;
+const listen =
+    (event: string): any =>
+    (response: Response): any => {
+        const reader = response.body!.getReader();
         const decoder = new TextDecoder();
-        let buf: string = "";
-        return new Promise((resolve, fail): void => {
-            response.body.on("data", (buffer: Buffer) => {
-                const chunk = decoder.decode(buffer, { stream: true });
-                const eventString = chunk.toString();
-                // Check if buffer is more than LF (Line Feed)
-                if (eventString.length > 1) {
-                    const event = JSON.parse(eventString);
-                    process.stdout.write(event.type + "\n");
-                    if (event.type == "gameFinish") {
+        var buffer = "";
+        var gameEvent: any;
+        const loop: any = () =>
+            reader.read().then(({ done, value }) => {
+                if (!done) {
+                    const chunk: any = decoder.decode(value, {
+                        stream: true,
+                    });
+                    buffer += chunk;
+                    const parts = buffer.split(eol);
+                    buffer = parts.pop()!;
+                    for (const part of parts.filter(p => p)) {
+                        gameEvent = JSON.parse(part);
+                        if (gameEvent.type == event) {
+                            notify();
+                        }
+                    }
+                    return loop();
+                }
+                if (buffer.length > 0) {
+                    gameEvent = JSON.parse(buffer);
+                    if (gameEvent.type == event) {
                         notify();
                     }
                 }
             });
-            // response.body.on("data", (buffer: Buffer) => {
-            //     const chunk = decoder.decode(buffer, { stream: true });
-            //     process.stdout.write(chunk + "\n");
-            //     buf += chunk;
-            //     const parts = buf.split(matcher);
-            //     buf = parts.pop() || "";
-            //     for (const i of parts.filter(p => p)) processLine(JSON.parse(i));
-            // });
-            response.body.on("end", () => {
-                if (buf.length > 0) processLine(JSON.parse(buf));
-                resolve();
-            });
-            response.body.on("error", fail);
-        });
+        return loop();
     };
 
-export function notifyOnFinishStream(onMessage: any, config: any): void {
-    const stream = fetch("https://lichess.org/api/stream/event", config);
-    stream
-        .then(response => {
-            console.log(response);
-            readStream(onMessage);
-        });
+export function notifyOnEvent(event: string, config: any): void {
+    fetch("https://lichess.org/api/stream/event", config).then(listen(event));
 }

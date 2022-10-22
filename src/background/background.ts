@@ -1,8 +1,6 @@
-import { notifyOnFinishStream } from "../api/utils";
+import { notifyOnEvent } from "../api/utils";
 
-const token = "lip_JhlqKV2dGbC66p7kTnL9";
-
-const onMessage = (obj: any): void => console.log(obj);
+const token = "";
 
 const config = {
     method: "GET",
@@ -12,4 +10,4 @@ const config = {
     },
 };
 
-notifyOnFinishStream(onMessage, config);
+notifyOnEvent("gameFinish", config);

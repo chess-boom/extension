@@ -1,7 +1,7 @@
 import "./style.css";
 import { downloadGame, mimetype } from "../api/utils";
 
-const token = "lip_dpwOr9eC6UfChJPefDog";
+const token = "";
 
 const config = {
     method: "GET",
