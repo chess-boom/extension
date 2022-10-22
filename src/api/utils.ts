@@ -59,32 +59,43 @@ const listen =
         var buffer = "";
         var gameEvent: any;
         const loop: any = () =>
-            reader.read().then(({ done, value }) => {
-                if (!done) {
-                    const chunk: any = decoder.decode(value, {
-                        stream: true,
-                    });
-                    buffer += chunk;
-                    const parts = buffer.split(eol);
-                    buffer = parts.pop()!;
-                    for (const part of parts.filter(p => p)) {
-                        gameEvent = JSON.parse(part);
+            reader
+                .read()
+                .then(({ done, value }) => {
+                    if (!done) {
+                        const chunk: any = decoder.decode(value, {
+                            stream: true,
+                        });
+                        buffer += chunk;
+                        const parts = buffer.split(eol);
+                        buffer = parts.pop()!;
+                        for (const part of parts.filter(p => p)) {
+                            gameEvent = JSON.parse(part);
+                            console.log(gameEvent);
+                            if (gameEvent.type == event) {
+                                notify();
+                            }
+                        }
+                        return loop();
+                    }
+                    if (buffer.length > 0) {
+                        gameEvent = JSON.parse(buffer);
+                        console.log(gameEvent);
                         if (gameEvent.type == event) {
                             notify();
                         }
                     }
-                    return loop();
-                }
-                if (buffer.length > 0) {
-                    gameEvent = JSON.parse(buffer);
-                    if (gameEvent.type == event) {
-                        notify();
-                    }
-                }
-            });
+                })
+                .catch(error => {
+                    console.error(error);
+                });
         return loop();
     };
 
 export function notifyOnEvent(event: string, config: any): void {
-    fetch("https://lichess.org/api/stream/event", config).then(listen(event));
+    fetch("https://lichess.org/api/stream/event", config)
+        .then(listen(event))
+        .catch(error => {
+            console.error(error);
+        });
 }
