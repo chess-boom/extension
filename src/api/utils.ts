@@ -14,20 +14,20 @@ export enum LichessGameEvent {
 function _config(acceptType: string){
     return {
         method: "GET",
-        headers: { 
+        headers: {
             Authorization: `Bearer ${token}`,
-            Accept: acceptType 
+            Accept: acceptType
         },
     }
 };
 
 function _notifyOnGameEvent (event: LichessGameEvent): (response: Response) => void {
     const notifConfig = {
-        iconUrl: "images/icon-32.png",
+        iconUrl: "icons/icon48.png",
         title: "Chess Boom",
         message: "Great game! Click on the Chess Boom icon to begin analysis!"
     }
-    
+
     // here is where we define response data logic
     const executeNotifOnGameEvent = (data: string): void => {
         const gameEvent = JSON.parse(data);
@@ -38,7 +38,7 @@ function _notifyOnGameEvent (event: LichessGameEvent): (response: Response) => v
 
     return (response: Response): void => handleStreamResponse(response, executeNotifOnGameEvent);
 };
-    
+
 export function apiDownloadGame(gameId: string): void {
     fetch(`https://lichess.org/game/export/${gameId}`, _config(downloadMimetype))
         .then(response => response.body)
