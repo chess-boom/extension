@@ -19,7 +19,7 @@
   "homepage": "https://github.com/chess-boom/extension#readme",
   "devDependencies": {
     "@tsconfig/recommended": "^1.0.1",
-    "@types/chrome": "^0.0.196",
+    "@types/chrome": "^0.0.199",
     "@types/jest": "^29.2.0",
     "copy-webpack-plugin": "^11.0.0",
     "css-loader": "^6.7.1",
