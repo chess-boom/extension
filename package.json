@@ -1,6 +1,6 @@
 {
   "name": "@chessboom/extension",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "main": "index.js",
   "scripts": {
     "build": "webpack --config webpack/webpack.config.js",
