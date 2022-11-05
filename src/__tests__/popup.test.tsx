@@ -2,10 +2,10 @@ import puppeteer from "puppeteer";
 import path from "path";
 
 const pathToExtension = path.join(__dirname, "..", "..", "dist");
-const extensionId = "npjeelapenljoafjpkeaabokjoibeoal";
+const extensionId = "ahgcojngbndmflmpkalmcjfonkpmfpap";
 
 async function getExtensionId(browser: puppeteer.Browser): Promise<string> {
-    var page = await browser.newPage();
+    const page = await browser.newPage();
     await page?.goto("chrome://extensions");
     await page.click("cr-toggle#devMode");
 
@@ -31,7 +31,7 @@ describe("Test index.html", () => {
         // TODO : fix
         // const extensionId = getExtensionId(browser);
 
-        var page = await browser.newPage();
+        const page = await browser.newPage();
 
         await page.goto(`chrome-extension://${extensionId}/index.html`);
 
