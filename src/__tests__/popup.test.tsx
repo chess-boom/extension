@@ -1,41 +1,53 @@
 import puppeteer from "puppeteer";
+import path from "path";
 
-const EXTENSION_PATH = "./dist";
-const EXTENSION_ID = "";
+const pathToExtension = path.join(__dirname, "..", "..", "dist");
+const extensionId = "npjeelapenljoafjpkeaabokjoibeoal";
 
-async function getExtensionId(browser: puppeteer.Browser): Promise<string | undefined> {
-    const targets = await browser.targets();
-    const extension_target = targets.find(target => {
-        target.type() == "service_worker";
-    });
-    if (extension_target) {
-        const url = extension_target.url() || "";
-        const [, , extension_id] = url.split("/");
-        return extension_id;
-    }
+async function getExtensionId(browser: puppeteer.Browser): Promise<string> {
+    var page = await browser.newPage();
+    await page?.goto("chrome://extensions");
+    await page.click("cr-toggle#devMode");
+
+    await page.waitForSelector("div#extension-id");
+    const extensionIdElem = await page.$("div#extension-id");
+    const extensionIdText = await extensionIdElem?.evaluate((e: { innerHTML: any }) => e.innerHTML);
+    const [_, extensionId] = extensionIdText.split(": ");
+
+    console.log(extensionId);
+
+    page.close();
+
+    return extensionId;
 }
 
 describe("Test index.html", () => {
     it("should check if elements are rendered correctly", async () => {
         const browser = await puppeteer.launch({
             headless: false,
-            args: [`--disable-extensions-except=${EXTENSION_PATH}`, `--load-extension=${EXTENSION_PATH}`],
+            args: [`--disable-extensions-except=${pathToExtension}`, `--load-extension=${pathToExtension}`],
         });
-        var [page] = await browser.pages();
-        // var extension_id = await getExtensionId(browser);
-        await page.goto(`chrome-extension://${EXTENSION_ID}/index.html`);
+
+        // TODO : fix
+        // const extensionId = getExtensionId(browser);
+
+        var page = await browser.newPage();
+
+        await page.goto(`chrome-extension://${extensionId}/index.html`);
+
+        expect(page).toBeDefined();
 
         await page.waitForSelector("button#yes");
         const textElemYes = await page.$("button#yes");
-        const yes = await textElemYes?.evaluate(e => e.innerHTML);
+        const yes = await textElemYes?.evaluate((e: { innerHTML: any }) => e.innerHTML);
 
         await page.waitForSelector("button#no");
         const textElemNo = await page.$("button#no");
-        const no = await textElemNo?.evaluate(e => e.innerHTML);
+        const no = await textElemNo?.evaluate((e: { innerHTML: any }) => e.innerHTML);
 
         await page.waitForSelector("h1");
         const textElemHeader = await page.$("h1");
-        const header = await textElemHeader?.evaluate(e => e.innerText);
+        const header = await textElemHeader?.evaluate((e: { innerHTML: any }) => e.innerHTML);
 
         expect(yes).toEqual("Yes, show me!");
         expect(no).toEqual("No thanks");
