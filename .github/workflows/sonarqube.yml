@@ -1,7 +1,7 @@
 name: SonarQube
 on:
   push:
-    branches: [ "main", "sonarqube_test" ]
+    branches: [ "main", "sonarqube_test" ] #Temporary
   pull_request:
     branches: [ "main" ]
 jobs:
