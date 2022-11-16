@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - main # or the name of your main branch
+      - CB-90/SonarQubeSetup/btakli
 jobs:
   build:
     name: Build
@@ -12,9 +13,11 @@ jobs:
         with:
           fetch-depth: 0
       - uses: sonarsource/sonarqube-scan-action@master
+        working-directory: scripts
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+
       # If you wish to fail your job when the Quality Gate is red, uncomment the
       # following lines. This would typically be used to fail a deployment.
       # - uses: sonarsource/sonarqube-quality-gate-action@master
