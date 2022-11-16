@@ -25,7 +25,7 @@ jobs:
         npm install --save-dev
         npm run build
     - name: SonarQube
-    - uses: sonarsource/sonarqube-scan-action@master
+      uses: sonarsource/sonarqube-scan-action@master
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
