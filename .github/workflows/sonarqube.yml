@@ -24,19 +24,16 @@ jobs:
       run: |
         npm install --save-dev
         npm run build
-    # - name: SonarQube
-    #   uses: actions/checkout@v2
+    - name: SonarQube
+    - uses: sonarsource/sonarqube-scan-action@master
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+    # - name: SonarQube Scan code
+    #   uses: kitabisa/sonarqube-action@v1.2.0
     #   with:
-    #     fetch-depth: 0
-    # - uses: sonarsource/sonarqube-scan-action@master
-    #   env:
-    #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-    #     SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-    - name: SonarQube Scan code
-      uses: kitabisa/sonarqube-action@v1.2.0
-      with:
-        host: ${{ secrets.SONAR_HOST_URL }} # Variable set in the Github Secrets
-        login: ${{ secrets.SONAR_TOKEN }} # Variable set in the Github Secrets
+    #     host: ${{ secrets.SONAR_HOST_URL }} # Variable set in the Github Secrets
+    #     login: ${{ secrets.SONAR_TOKEN }} # Variable set in the Github Secrets
 
       # If you wish to fail your job when the Quality Gate is red, uncomment the
       # following lines. This would typically be used to fail a deployment.
