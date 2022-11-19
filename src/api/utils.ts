@@ -22,17 +22,12 @@ function _config(acceptType: string){
 };
 
 function _notifyOnGameEvent (event: LichessGameEvent): (response: Response) => void {
-    const notifConfig = {
-        iconUrl: "icons/icon48.png",
-        title: "Chess Boom",
-        message: "Great game! Click on the Chess Boom icon to begin analysis!"
-    }
-
     // here is where we define response data logic
     const executeNotifOnGameEvent = (data: string): void => {
         const gameEvent = JSON.parse(data);
         if (gameEvent.type == event) {
-            notification(notifConfig);
+            const message = "Great game! Click on the Chess Boom icon to begin analysis!";
+            notification(message);
         }
     };
 
