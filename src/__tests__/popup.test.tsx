@@ -1,10 +1,10 @@
-import puppeteer from "puppeteer";
+import puppeteer, {Browser} from "puppeteer";
 import path from "path";
 
 const pathToExtension = path.join(__dirname, "..", "..", "dist");
 const extensionId = "ahgcojngbndmflmpkalmcjfonkpmfpap";
 
-async function getExtensionId(browser: puppeteer.Browser): Promise<string> {
+async function getExtensionId(browser: Browser): Promise<string> {
     const page = await browser.newPage();
     await page?.goto("chrome://extensions");
     await page.click("cr-toggle#devMode");
