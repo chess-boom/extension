@@ -5,6 +5,7 @@
   "scripts": {
     "build": "webpack --config webpack/webpack.config.js",
     "test": "jest --watchAll",
+    "test:ci": "jest --watchAll=false --ci --coverage --testPathIgnorePatterns popup.test.tsx",
     "coverage": "jest --watchAll=false --coverage"
   },
   "repository": {
