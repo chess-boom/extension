@@ -33,7 +33,7 @@
     "jest": "^29.2.2",
     "lint-staged": "^13.0.3",
     "prettier": "^2.7.1",
-    "sonarqube-scanner": "^2.8.2",
+    "sonarqube-scanner": "^3.0.0",
     "puppeteer": "^19.3.0",
     "style-loader": "^3.3.1",
     "ts-jest": "^29.0.3",
