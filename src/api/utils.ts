@@ -3,6 +3,7 @@ import { getReadableStream, handleStreamResponse } from "./streamUtils";
 
 const downloadMimetype = "application/x-chess-pgn";
 const gameEventMimetype = "application/x-ndjson";
+const downloadPath = "CBoom/gameFiles/"
 const token = ""; // don't forget to add your token here!
 const ext = "pgn";
 
@@ -46,7 +47,7 @@ export function apiDownloadGame(gameId: string): void {
         .then(stream => new Response(stream, { headers: { "Content-Type": "text/plain" } }).text())
         .then(gameData => {
             const url = `data:${downloadMimetype},${gameData}`;
-            const filename = `${gameId}.${ext}`
+            const filename = `${downloadPath}${gameId}.${ext}`
 
             download(url, filename);
         });
