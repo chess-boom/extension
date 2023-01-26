@@ -1,4 +1,5 @@
 import "./style.css";
-import { handleYes } from "./utils";
+import { handleNo, handleYes } from "./utils";
 
 document.getElementById("yes")!.addEventListener("click", handleYes)!;
+document.getElementById("no")!.addEventListener("click", handleNo)!;
