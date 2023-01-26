@@ -21,3 +21,9 @@ export function handleYes(): void {
     
     tabQuery(query, downloadOnGameIdExists);
 };
+
+export function handleNo(): void {
+
+    window.close();
+
+}
