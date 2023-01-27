@@ -22,12 +22,7 @@
         "activeTab",
         "tabs",
         "downloads",
-        "notifications",
-        "storage",
-        "alarms",
-        "scripting",
-        "declarativeContent",
-        "nativeMessaging"
+        "notifications"
     ],
     "host_permissions": ["https://lichess.org/"],
     "background": {
