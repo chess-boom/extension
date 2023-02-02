@@ -44,7 +44,14 @@ button {
     display: inline-block;
     font-size: 16px;
     min-width: 150px;
+    transition-duration: 0.2s;
 }
+
+button:hover {
+    /* background-color: #161617; */
+    color: #ffffff;
+    border-color: #edd5c1;
+  }
 
 /* Container for flexboxes */
 .row {
