@@ -21,7 +21,7 @@ export function handleStreamResponse(response: Response, responseDataLogic: (dat
     const decoder = new TextDecoder();
     const eol = /\r?\n/;
 
-    var buffer = "";
+    let buffer = "";
     
     const loop: any = () =>
         reader.read()
