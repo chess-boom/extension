@@ -28,9 +28,6 @@ describe("Test index.html", () => {
             args: [`--disable-extensions-except=${pathToExtension}`, `--load-extension=${pathToExtension}`],
         });
 
-        // TODO : fix
-        // const extensionId = getExtensionId(browser);
-
         const page = await browser.newPage();
 
         await page.goto(`chrome-extension://${extensionId}/index.html`);
