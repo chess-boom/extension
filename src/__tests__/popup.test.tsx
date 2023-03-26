@@ -2,7 +2,7 @@ import puppeteer, {Browser} from "puppeteer";
 import path from "path";
 
 const pathToExtension = path.join(__dirname, "..", "..", "dist");
-const extensionId = "ahgcojngbndmflmpkalmcjfonkpmfpap";
+const extensionId = "oeejdpbcbkpkbiiedbcjkdieeaooloio";
 
 async function getExtensionId(browser: Browser): Promise<string> {
     const page = await browser.newPage();
@@ -49,9 +49,9 @@ describe("Test index.html", () => {
         const textElemHeader = await page.$("h1");
         const header = await textElemHeader?.evaluate((e: { innerHTML: any }) => e.innerHTML);
 
-        expect(yes).toEqual("Yes, show me!");
-        expect(no).toEqual("No thanks");
-        expect(header).toEqual("Analyze Game?");
+        expect(yes).toEqual("Export Game");
+        expect(no).toEqual("Close");
+        expect(header).toEqual("CBoom Analysis");
 
         browser.close();
     });
