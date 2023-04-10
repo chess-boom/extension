@@ -20,7 +20,7 @@
   },
   "homepage": "https://github.com/chess-boom/extension#readme",
   "devDependencies": {
-    "@tsconfig/recommended": "^1.0.1",
+    "@tsconfig/recommended": "^1.0.2",
     "@types/chrome": "^0.0.209",
     "@types/jest": "^29.2.2",
     "axios": "^1.1.3",
